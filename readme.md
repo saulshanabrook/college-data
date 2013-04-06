@@ -16,5 +16,5 @@ Takes `Raw Data/large.csv` and `Raw Data/small.csv` and merges them and fixes th
 
 # But then what do I do?
 
-I use -Google Refine-[OpenRefine](http://openrefine.org/) to filter this data. [Google Fusion Tables](http://www.google.com/drive/start/apps.html#fusiontables)
+I use [OpenRefine](http://openrefine.org/) to filter this data. [Google Fusion Tables](http://www.google.com/drive/start/apps.html#fusiontables)
 is also nice for mapping the data and it works with Google Drive.
