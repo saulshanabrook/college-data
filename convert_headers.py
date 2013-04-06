@@ -11,7 +11,7 @@ writer = csv.writer(tmp)
 with open(csv_path, 'rb') as csvfile:
     dialect = csv.Sniffer().sniff(csvfile.read(1024 * 5))
     csvfile.seek(0)
-    reader = csv.reader(csvfile, dialect)
+    reader = csv.reader(csvfile, dialect=dialect)
     line = 0
     for row in reader:
         line += 1
