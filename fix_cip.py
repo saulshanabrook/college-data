@@ -6,16 +6,13 @@ import csv
 import tempfile
 
 
-def divide_values(dictionary, numerator, denominator):
-    numerator = dictionary[numerator]
-    denominator = dictionary[denominator]
-    answer = float(numerator) / float(denominator)
-    return round(answer, 2)
+TOTAL_COLUMN = 'graduates Grand total'
 
 csv_path = sys.argv[1]
 college_dict = defaultdict(lambda: {})
-# Dict keys:
-# ['award level code', 'cip code -  2010 classification', 'institution name', 'first or second major', 'grand total', 'cipcode', 'id of institution where data are reported for the completions component', 'unitid']
+
+fieldnames = []
+
 with open(csv_path, 'rb') as csvfile:
     dialect = csv.Sniffer().sniff(csvfile.read(1024))
     csvfile.seek(0)
@@ -25,23 +22,26 @@ with open(csv_path, 'rb') as csvfile:
         college['unitid'] = row['unitid']
         major_name = 'graduates ' + row['cip code -  2010 classification']
         college[major_name] = row['grand total']
-        if 'graduates Grand total' in college:
-            if 'graduates Computer Science' in college:
-                college['percent graduates Computer Science'] = divide_values(college, 'graduates Computer Science', 'graduates Grand total')
-            if 'graduates Computer Programming' in college:
-                college['percent graduates Computer Programming'] = divide_values(college, 'graduates Computer Programming', 'graduates Grand total')
+        fieldnames.append(major_name)
 
+for college in college_dict.values():
+    for key in college.keys():
+        if key == 'unitid' or key == TOTAL_COLUMN:
+            continue
+        try:
+            major_percent = round(
+                float(college[key]) / float(college[TOTAL_COLUMN]),
+                2
+            )
+        except (ZeroDivisionError, KeyError):
+            pass
+        else:
+            major_percent_name = 'percent ' + key
+            fieldnames.append(major_percent_name)
+            college[major_percent_name] = major_percent
 
+fieldnames = ['unitid'] + sorted(list(set(fieldnames)))
 tmp = tempfile.SpooledTemporaryFile()
-
-fieldnames = (
-    'unitid',
-    'graduates Grand total',
-    'graduates Computer Science',
-    'graduates Computer Programming',
-    'percent graduates Computer Science',
-    'percent graduates Computer Programming'
-)
 writer = csv.DictWriter(tmp, fieldnames=fieldnames)
 headers = dict((n, n) for n in fieldnames)
 writer.writerow(headers)
