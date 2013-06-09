@@ -11,4 +11,7 @@ add_good_column:
 merge:
 	python bin/merge.py Cleaned/Headers/large.csv Cleaned/small_fixed.csv Cleaned/good_fixed.csv Cleaned/final.csv
 
-all: convert_headers reorganize_small add_good_column merge
+create_smaller:
+	python bin/keep_columns.py Cleaned/final.csv > Cleaned/smaller_final.csv
+
+all: convert_headers reorganize_small add_good_column merge create_smaller
