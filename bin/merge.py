@@ -11,8 +11,8 @@ def dialect_from_path(path):
 def datafrom_from_csv(path):
     return pd.read_csv(path, index_col=0, dialect=dialect_from_path(path))
 
-files = sys.argv[1:-1]
-destination = sys.argv[-1]
+files = sys.argv[1:]
+destination = sys.stdout
 dataframes = map(datafrom_from_csv, files)
 final_dataframe = dataframes.pop(0)
 for dataframe in dataframes:
